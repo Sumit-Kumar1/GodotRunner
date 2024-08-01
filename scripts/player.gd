@@ -1,11 +1,12 @@
 extends CharacterBody3D
 
 # How fast the player moves in meters per second.
-@export var speed = 14
+@export var speed = 20
 # The downward acceleration when in the air, in meters per second squared.
 @export var fall_acceleration = 75
 
 var target_velocity = Vector3.ZERO
+@export var jump = 4
 
 func _physics_process(delta):
 	# In 3D godot XZ is the ground plane
@@ -19,18 +20,21 @@ func _physics_process(delta):
 		direction.x -= 1
 	if Input.is_action_pressed("move_forward"):
 		direction.z += 1
-	if Input.is_action_just_pressed("move_backwards"):
+	if Input.is_action_pressed("move_back"):
 		direction.z -= 1
 
 
 	if direction != Vector3.ZERO:
-		direction = direction.normalized() * speed
+		direction = direction.normalized()*speed*delta
 		# Setting the basis property will affect the rotation of the node.
 		$Pivot.basis = Basis.looking_at(direction)
 	
 	# Ground Velocity
 	target_velocity.x = direction.x * speed
 	target_velocity.z = direction.z * speed
+	
+	if is_on_floor() and Input.is_action_pressed("jump"):
+		target_velocity.y += 10*jump
 
 	# Vertical Velocity
 	if not is_on_floor(): # If in the air, fall towards the floor. Literally gravity

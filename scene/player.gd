@@ -1,7 +1,8 @@
 extends CharacterBody3D
 
 # How fast the player moves in meters per second.
-@export var speed = 20
+@export var speed = 5
+
 # The downward acceleration when in the air, in meters per second squared.
 @export var fall_acceleration = 75
 
@@ -10,8 +11,6 @@ var target_velocity = Vector3.ZERO
 
 func _physics_process(delta):
 	# In 3D godot XZ is the ground plane
-
-	# Direction variable
 	var direction = Vector3.ZERO
 	
 	if Input.is_action_pressed("move_left"):
@@ -34,7 +33,7 @@ func _physics_process(delta):
 	target_velocity.z = direction.z * speed
 	
 	if is_on_floor() and Input.is_action_pressed("jump"):
-		target_velocity.y += 10*jump
+		target_velocity.y = 10*jump
 
 	# Vertical Velocity
 	if not is_on_floor(): # If in the air, fall towards the floor. Literally gravity
